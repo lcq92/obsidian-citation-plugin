@@ -227,9 +227,9 @@ export abstract class Entry {
     return pdfHash;
   }
 
-  function arrayToMultilineIndentedString(arr) {
+  public arrayToMultilineIndentedString(arr: string[]): string{
     return `\n` + arr.map(item => `  - ${item}`).join('\n');
-  }
+  };
 
   //public get zoteroPdfURI(): string {
   public get zoteroPdfURI(): string {
@@ -241,7 +241,7 @@ export abstract class Entry {
     //}
     if (hashPdf.length > 0) {
       const URIPdf = hashPdf.map(hash => `zotero://open-pdf/library/items/${hash}`);
-      return arrayToMultilineIndentedString(URIPdf);
+      return this.arrayToMultilineIndentedString(URIPdf);
     } else {
       return null;
     }
