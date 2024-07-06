@@ -204,23 +204,44 @@ export abstract class Entry {
     return `zotero://select/items/@${this.id}`;
   }
 
-  public get zoteroPdfHash(): string {
+  //public get zoteroPdfHash(): string {
+  public get zoteroPdfHash(): string[] {
     const files = this.files || [];
 
-    const pdfPath = files.find((f) => f.toLowerCase().endsWith('.pdf'));
+    //const pdfPath = files.find((f) => f.toLowerCase().endsWith('.pdf'));
+    const pdfPath = files.filter((f) => f.toLowerCase().endsWith('.pdf'));
 
-    if (!pdfPath) {
-      return null;
-    }
-    const idxStorage = pdfPath.toLowerCase().indexOf('/storage/');
-    const pdfHash = pdfPath.substring(idxStorage + 9, idxStorage + 9 + 8);
+    //if (!pdfPath) {
+    //  return null;
+    //}
+
+    //const idxStorage = pdfPath.toLowerCase().indexOf('/storage/');
+    const idxStorage = pdfPath.map(path => path.toLowerCase().indexOf('/storage/'));
+
+    //const pdfHash = pdfPath.substring(idxStorage + 9, idxStorage + 9 + 8);    
+    const pdfHash = pdfPath.map(path => {
+        const idxStorage = path.toLowerCase().indexOf('/storage/');
+        return path.substring(idxStorage + 9, idxStorage + 9 + 8);
+    });
+
     return pdfHash;
   }
 
+  function arrayToMultilineIndentedString(arr) {
+    return `\n` + arr.map(item => `  - ${item}`).join('\n');
+  }
+
+  //public get zoteroPdfURI(): string {
   public get zoteroPdfURI(): string {
     const hashPdf = this.zoteroPdfHash;
-    if (hashPdf) {
-      return `zotero://open-pdf/library/items/${hashPdf}`;
+    //if (hashPdf) {
+    //  return `zotero://open-pdf/library/items/${hashPdf}`;
+    //} else {
+    //  return null;
+    //}
+    if (hashPdf.length > 0) {
+      const URIPdf = hashPdf.map(hash => `zotero://open-pdf/library/items/${hash}`);
+      return arrayToMultilineIndentedString(URIPdf);
     } else {
       return null;
     }
